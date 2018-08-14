@@ -1,0 +1,35 @@
+注意点：
+
+动态代理模式依赖的是JDK，所以又称为JDK代理
+	静态代理模式：不管是委托类，还是代理类都要实现我们定义好的接口
+	
+	动态代理模式：委托类去实现接口，实现我们想要达成的功能
+			    代理类直接InvocationHandler 接口，实现invoke(Object proxy, Method method, Object[] args)方法
+			    其中参数： proxy --被代理的对象 		method --被代理对象的方法	 	args --执行method方法的参数 
+			    届时当我们调用代理对象时（给客户实力化的就是代理对象，客户调用的就是代理对象），客户调用的形式为 ： 代理对象.方法   
+			    最终调用到的就是代理对象的invoke方法，客户想要调用的方法和需要的参数或作为参数method和args传递过来，执行invoke方法
+			    
+			    动态代理模式的创建：
+			    我们可以提供一个工厂类，这个工厂类持有委托类的对象实例，
+			  	public class DynProxyFactory {
+					// 客户类调用此工厂方法获得代理对象。
+					// 对客户类来说，其并不知道返回的是代理类对象还是委托类对象。
+					public static Subject getInstance() {
+						Subject delegate = new RealSubject();
+						InvocationHandler handler = new SubjectInvocationHandler(delegate);
+						Subject proxy = null;
+						proxy = (Subject) Proxy.newProxyInstance(delegate.getClass().getClassLoader(),
+								delegate.getClass().getInterfaces(), handler);
+						return proxy;
+					}
+				}
+			    最后这个返回值就是我们需要的代理对象。客户使用的就是这个对象
+			    
+			    
+			    在测试类中我们可以看到 代理对象继承于Proxy，和委托类除了功能上的关系外，体系上没任何关系，因为代理类和委托类实现的不是同一个接口
+			    并且对生成的代理类字节码文件分析，能够发现代理类其实时继承于Proxy的，以这为基础说明了为什么使用JDK动态代理不能实现继承式动态代理，
+			    原因是Java不允许多继承，而生成的代理类本身就已经继承了Proxy类。
+			    
+			    也就是说Proxy仅支持 interface（接口，可以多实现） 代理。Java 的单继承机制注定了这些动态代理类们无法实现对 class（类，只能单继承） 的动态代理。
+			    
+			    但是我们可以使用cglib来实现继承式的动态代理。

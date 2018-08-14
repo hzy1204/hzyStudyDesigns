@@ -1,0 +1,24 @@
+在本例中：
+	1.Component（被装饰对象的基类） -- Person 
+	定义一个对象接口，可以给这些对象动态地添加职责。
+	
+	2.ConcreteComponent（具体被装饰对象） -- Man 
+	定义一个对象，可以给这个对象添加一些职责。
+	
+	3.Decorator（装饰者抽象类） -- Decorator 
+	 维持一个指向Component实例的引用，并定义一个与Component接口一致的接口。
+	 
+	 4.ConcreteDecorator（具体装饰者） -- ManDecoratorA  -- ManDecoratorB
+	 具体的装饰对象，给内部持有的具体被装饰对象，增加具体的职责。
+	 
+	 Man最开始只有一个功能eat();实现效果是打印 “男人在吃”
+	 在Decorator抽象类中持有Person接口的实例，在提供一个setter方法，当我们具体用到Person接口的哪个实现时，
+	 直接通过setter注入进来，在Decorator抽象类中再提供一个普通的eat()方法，方法内部直接调用Person的eat()方法，
+	 而我们的具体装饰者则去继承抽象装饰类Decorator，并且在具体装饰类中再写一个普通的eat()方法，里面通过super.eat();去调用
+	 父类里面提供eat()方法，（而父类里面的eat()方法其实就是调用的Man里面的eat()方法），此时我们就可以在具体装饰类的eat()方法里面
+	 去扩展我们想要的功能了。
+	 
+	 为什么叫装饰模式？ 因为我最后调用了Man里面的eat()方法，同时我还可以在自己的方法里面进行扩展，相当于给Man里面的eat()方法扩展功能了
+	 
+	 注：可以多个装饰类去装饰同一个类，具体执行流程见DecoratorTest   具体装饰类中的装饰方法方法名要和被装饰的方法方法名一致
+	 
